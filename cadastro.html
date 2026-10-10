@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Cadastro | UtiliStore</title>
+
+  <!-- Ícones -->
+  <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+
+  <!-- Fonte Inter via Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+    rel="stylesheet"
+  />
+
+  <link rel="stylesheet" href="/style.css" />
+</head>
+<body class="page-register">
+
+  <!-- ===== Fundo decorativo ===== -->
+  <div class="bg-shape shape-1"></div>
+  <div class="bg-shape shape-2"></div>
+
+  <main class="auth-wrapper">
+    <!-- ===== Lado ilustrativo ===== -->
+    <section class="auth-side">
+      <div class="brand">
+        <img src="./img/logo-utilistore.png" alt="Logo" class="logo">
+      </div>
+      <h1>Crie sua conta</h1>
+      <p>
+        Faça parte do nosso marketplace. Leva menos de um minuto
+        para começar a comprar ou vender.
+      </p>
+      <ul class="lista-decorativa">
+        <li>
+            <i class="bx bx-badge-check"></i>
+            Cadastro rápido e gratuito
+        </li>
+        <li>
+            <i class="bx bx-badge-check"></i>
+            Escolha o perfil ideal para você
+        </li>
+        <li>
+            <i class="bx bx-badge-check"></i>
+            Comece a usar na hora
+        </li>
+      </ul>
+    </section>
+
+    <!-- ===== Card do formulário de cadastro ===== -->
+    <section class="auth-card">
+      <div class="auth-card-inner">
+        <h2 class="auth-title">Criar conta</h2>
+        <p class="auth-subtitle">Preencha os dados abaixo para se cadastrar</p>
+
+        <div id="alertBox" class="alert" hidden></div>
+
+        <form id="registerForm" novalidate>
+          <!-- Nome completo -->
+          <div class="field-group">
+            <label for="fullName" class="field-label">Nome completo</label>
+            <div class="input-with-icon">
+              <span class="input-icon"></span>
+              <i class="bx bxs-user"></i>
+              <input
+                type="text"
+                id="fullName"
+                name="fullName"
+                placeholder="Digite seu nome completo"
+                autocomplete="name"
+              />
+            </div>
+            <span class="field-error" id="fullNameError"></span>
+          </div>
+
+          <!-- E-mail -->
+          <div class="field-group">
+            <label for="regEmail" class="field-label">E-mail</label>
+            <div class="input-with-icon">
+              <span class="input-icon"></span>
+              <i class="bx bxs-user"></i>
+              <input
+                type="email"
+                id="regEmail"
+                name="email"
+                placeholder="seuemail@exemplo.com"
+                autocomplete="email"
+              />
+            </div>
+            <span class="field-error" id="regEmailError"></span>
+          </div>
+
+          <!-- Senha -->
+          <div class="field-group">
+            <label for="regPassword" class="field-label">Senha</label>
+            <div class="input-with-icon">
+              <span class="input-icon"></span>
+              <i class="bx bxs-lock-alt"></i>
+              <input
+                type="password"
+                id="regPassword"
+                name="password"
+                placeholder="Crie uma senha"
+                autocomplete="new-password"
+              />
+              <button type="button" class="toggle-password" data-target="regPassword" aria-label="Mostrar senha"></button>
+            </div>
+            <span class="field-error" id="regPasswordError"></span>
+          </div>
+
+          <!-- Confirmar senha -->
+          <div class="field-group">
+            <label for="confirmPassword" class="field-label">Confirmar senha</label>
+            <div class="input-with-icon">
+              <span class="input-icon"></span>
+              <i class="bx bxs-lock-alt"></i>
+              <input
+                type="password"
+                id="confirmPassword"
+                name="confirmPassword"
+                placeholder="Repita a senha"
+                autocomplete="new-password"
+              />
+              <button type="button" class="toggle-password" data-target="confirmPassword" aria-label="Mostrar senha"></button>
+            </div>
+            <span class="field-error" id="confirmPasswordError"></span>
+          </div>
+
+          <!-- Tipo de cadastro -->
+          <div class="field-group">
+            <label class="field-label">Tipo de cadastro</label>
+            <div class="access-type">
+              <label class="access-option">
+                <input type="radio" name="registerType" value="usuario" checked />
+                <span class="access-btn">
+                  <span class="access-icon"></span>
+                  <i class="bx bx-user access-icon"></i>
+                  Usuário
+                </span>
+              </label>
+              <label class="access-option">
+                <input type="radio" name="registerType" value="vendedor" />
+                <span class="access-btn">
+                  <span class="access-icon"></span>
+                  <i class="bx bx-store acess-icon"></i>
+                  Vendedor
+                </span>
+              </label>
+            </div>
+          </div>
+
+          <button type="submit" class="btn-primary">Cadastrar</button>
+
+          <p class="register-hint">
+            Já tem uma conta?
+            <button type="button" class="link-btn strong" id="backToLogin">Fazer login</button>
+          </p>
+        </form>
+      </div>
+    </section>
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>

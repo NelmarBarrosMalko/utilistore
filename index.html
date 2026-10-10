@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Login | UtiliStore</title>
+
+  <!-- Ícones -->
+  <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+
+  <!-- Fonte Inter via Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+    rel="stylesheet"
+  />
+
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body class="page-login">
+
+  <!-- ===== Fundo decorativo ===== -->
+  <div class="bg-shape shape-1"></div>
+  <div class="bg-shape shape-2"></div>
+
+  <main class="auth-wrapper">
+    <!-- ===== Lado ilustrativo (aparece em telas maiores) ===== -->
+    <section class="auth-side">
+      <div class="brand">
+        <img src="./img/logo-utilistore.png" alt="Logo" class="logo">
+      </div>
+      <h1>Bem-vindo de volta!</h1>
+      <p>
+        Compre, venda e gerencie tudo em um só lugar.
+        Acesse sua conta e continue de onde parou.
+      </p>
+      <ul class="lista-decorativa">
+          <li>
+              <i class="bx bx-badge-check"></i>
+              Compras rápidas e seguras
+          </li>
+
+          <li>
+              <i class="bx bx-badge-check"></i>
+              Painel completo para vendedores
+          </li>
+
+          <li>
+              <i class="bx bx-badge-check"></i>
+              Suporte dedicado
+          </li>
+      </u>
+    </section>
+
+    <!-- ===== Card do formulário de login ===== -->
+    <section class="auth-card">
+      <div class="auth-card-inner">
+        <h2 class="auth-title">Login UtiliStore</h2>
+        <p class="auth-subtitle">Escolha como deseja entrar e informe seus dados</p>
+
+        <!-- Alerta de mensagens (sucesso / erro) -->
+        <div id="alertBox" class="alert" hidden></div>
+
+        <form id="loginForm" novalidate>
+          <!-- Tipo de acesso -->
+          <div class="field-group">
+            <label class="field-label">Tipo de acesso</label>
+            <div class="type-acess">
+              <label class="access-option">
+                <input type="radio" name="accessType" value="usuario" checked />
+                <span class="access-btn">
+                  <span class="access-icon"></span>
+                  <i class="bx bx-user access-icon"></i>
+                  Usuário
+                </span>
+              </label>
+              <label class="access-option">
+                <input type="radio" name="accessType" value="vendedor" />
+                <span class="access-btn">
+                  <span class="access-icon"></span>
+                  <i class="bx bx-store acess-icon"></i>
+                  Vendedor
+                </span>
+              </label>
+            </div>
+          </div>
+
+          <!-- E-mail -->
+          <div class="field-group">
+            <label for="email" class="field-label">E-mail</label>
+            <div class="input-with-icon">
+              <span class="input-icon"></span>
+              <i class="bx bxs-user"></i>
+              <input
+                type="email"
+                id="email"
+                name="email"
+                placeholder="Digite seu e-mail"
+                autocomplete="email"
+              />
+            </div>
+            <span class="field-error" id="emailError"></span>
+          </div>
+
+          <!-- Senha -->
+          <div class="field-group">
+            <label for="password" class="field-label">Senha</label>
+            <div class="input-with-icon">
+              <span class="input-icon"></span>
+              <i class="bx bxs-lock-alt"></i>
+              <input
+                type="password"
+                id="password"
+                name="password"
+                placeholder="Digite sua senha"
+                autocomplete="current-password"
+              />
+              <button type="button" class="toggle-password" id="togglePassword" aria-label="Mostrar senha">
+                
+              </button>
+            </div>
+            <span class="field-error" id="passwordError"></span>
+          </div>
+
+          <div class="form-extra">
+            <label class="checkbox-label">
+              <input type="checkbox" id="remember" />
+              Lembrar-me
+            </label>
+            <button type="button" class="link-btn" id="forgotPasswordBtn">
+              Esqueci minha senha
+            </button>
+          </div>
+
+          <button type="submit" class="btn-primary">Entrar</button>
+
+
+          <!--OU ENTRE COM-->
+          <div class="ou">
+                <span></span>
+                OU
+                <span></span>
+            </div>
+
+          <!--Google-->
+            <button class="google">
+                <img src="./img/Google__G__logo.svg.webp" alt ="Google">
+                Continuar com Google
+            </button>
+
+          <p class="register-hint">
+            Não tem uma conta?
+            <button type="button" class="link-btn strong" id="goToRegister">Cadastre aqui</button>
+          </p>
+        </form>
+      </div>
+    </section>
+  </main>
+
+  <!-- ===== Modal: Esqueci minha senha ===== -->
+  <div class="modal-overlay" id="forgotModalOverlay" hidden>
+    <div class="modal-box" role="dialog" aria-modal="true" aria-labelledby="forgotModalTitle">
+      <button type="button" class="modal-close" id="closeForgotModal" aria-label="Fechar">✕</button>
+      <h3 id="forgotModalTitle">Recuperar senha</h3>
+      <p class="modal-text">
+        Informe seu e-mail cadastrado e enviaremos as instruções de recuperação de senha.
+      </p>
+
+      <div id="forgotAlertBox" class="alert" hidden></div>
+
+      <form id="forgotForm" novalidate>
+        <div class="field-group">
+          <label for="forgotEmail" class="field-label">E-mail</label>
+          <div class="input-with-icon">
+            <span class="input-icon">✉️</span>
+            <input
+              type="email"
+              id="forgotEmail"
+              placeholder="Digite seu e-mail"
+              autocomplete="email"
+            />
+          </div>
+          <span class="field-error" id="forgotEmailError"></span>
+        </div>
+        <button type="submit" class="btn-primary">Enviar link de recuperação</button>
+      </form>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
