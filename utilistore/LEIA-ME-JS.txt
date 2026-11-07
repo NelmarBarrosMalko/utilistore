@@ -1,0 +1,15 @@
+ORGANIZAÇÃO DOS JAVASCRIPTS - UTILISTORE
+
+Páginas e scripts:
+- index.html carrega js/utils.js e js/login.js.
+- cadastro.html carrega js/utils.js e js/cadastro.js.
+- dashboard.html carrega js/dashboard.js.
+
+O login continua integrado à API em http://localhost:3000/api/auth/login.
+O cadastro, os pedidos, os produtos, favoritos, carrinho e notificações do dashboard
+continuam sendo demonstrações no frontend; não estão conectados a um backend.
+
+O dashboard recupera o nome do cliente de localStorage e remove o token e os dados
+do cliente ao clicar em Sair. Os dados demonstrativos do painel não são persistidos.
+
+Para testar, abra a API separadamente e inicie as páginas pelo Live Server.
