@@ -56,6 +56,7 @@
       <div class="auth-card-inner">
         <h2 class="auth-title">Criar conta</h2>
         <p class="auth-subtitle">Preencha os dados abaixo para se cadastrar</p>
+        <p class="auth-subtitle" style="margin-top:-14px;font-size:.78rem;">A opção Vendedor permanece apenas como visual; o cadastro atual cria uma conta de cliente.</p>
 
         <div id="alertBox" class="alert" hidden></div>
 
@@ -77,6 +78,16 @@
             <span class="field-error" id="fullNameError"></span>
           </div>
 
+          <!-- CPF -->
+          <div class="field-group">
+            <label for="regCpf" class="field-label">CPF</label>
+            <div class="input-with-icon">
+              <i class="bx bx-id-card"></i>
+              <input type="text" id="regCpf" name="cpf" placeholder="000.000.000-00" inputmode="numeric" maxlength="14" autocomplete="off" />
+            </div>
+            <span class="field-error" id="regCpfError"></span>
+          </div>
+
           <!-- E-mail -->
           <div class="field-group">
             <label for="regEmail" class="field-label">E-mail</label>
@@ -92,6 +103,26 @@
               />
             </div>
             <span class="field-error" id="regEmailError"></span>
+          </div>
+
+          <!-- Telefone -->
+          <div class="field-group">
+            <label for="regPhone" class="field-label">Telefone</label>
+            <div class="input-with-icon">
+              <i class="bx bx-phone"></i>
+              <input type="tel" id="regPhone" name="telefone" placeholder="(62) 99999-9999" inputmode="tel" autocomplete="tel" />
+            </div>
+            <span class="field-error" id="regPhoneError"></span>
+          </div>
+
+          <!-- Data de nascimento -->
+          <div class="field-group">
+            <label for="birthDate" class="field-label">Data de nascimento</label>
+            <div class="input-with-icon">
+              <i class="bx bx-calendar"></i>
+              <input type="date" id="birthDate" name="dataNascimento" />
+            </div>
+            <span class="field-error" id="birthDateError"></span>
           </div>
 
           <!-- Senha -->
