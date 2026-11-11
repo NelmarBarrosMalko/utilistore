@@ -223,3 +223,50 @@ td.order-id { font-weight: 700; }
 }
 
 @media (prefers-reduced-motion: reduce) { * { animation: none !important; transition: none !important; } }
+
+/* ================= PERFIL, ENDEREÇOS E FORMULÁRIOS ================= */
+.card { background: #fff; border-radius: var(--radius-md); box-shadow: var(--sombra-card); padding: 24px; margin-bottom: 20px; }
+.card h3 { font-size: 1.05rem; font-weight: 800; margin-bottom: 14px; }
+.profile-head { display: flex; align-items: center; gap: 18px; }
+.profile-head h2 { font-size: 1.25rem; font-weight: 800; }
+.profile-head p, .hint, .danger-zone p { color: var(--cinza-texto); font-size: 0.88rem; margin-top: 2px; }
+.avatar-lg { width: 64px; height: 64px; font-size: 1.6rem; }
+.form-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px 16px; margin-bottom: 18px; }
+.field { display: flex; flex-direction: column; gap: 6px; font-size: 0.8rem; font-weight: 600; color: var(--cinza-texto); }
+.field.full { grid-column: 1 / -1; }
+.field input { padding: 11px 13px; border: 1.5px solid #dfe2ee; border-radius: var(--radius-sm); font-size: 0.9rem; color: var(--azul); background: #fff; }
+.field input:focus { border-color: var(--azul-claro); outline: none; }
+.btn-inline, .btn-danger { display: inline-flex; align-items: center; justify-content: center; gap: 6px; padding: 11px 20px; border-radius: var(--radius-sm); font-weight: 700; font-size: 0.88rem; transition: transform 0.15s; }
+.btn-inline { background: linear-gradient(135deg, var(--azul) 0%, var(--azul-claro) 100%); color: #fff; box-shadow: 0 8px 18px rgba(17, 32, 88, 0.22); }
+.btn-danger { background: var(--vermelho); color: #fff; }
+.btn-inline:hover, .btn-danger:hover { transform: translateY(-2px); }
+.danger-zone { display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; border: 1.5px solid rgba(229, 72, 77, 0.35); }
+.danger-zone h3 { margin-bottom: 2px; color: var(--vermelho); }
+.btn-outline-danger { border-color: var(--vermelho); color: var(--vermelho); margin-left: 6px; }
+.btn-outline-danger:hover { background: var(--vermelho); color: #fff; }
+.modal-box.wide { max-width: 580px; }
+.modal-box .hint { margin-bottom: 14px; }
+.modal-box .field { margin-bottom: 16px; }
+td.action { white-space: nowrap; text-align: right; }
+@media (max-width: 520px) { .form-grid { grid-template-columns: 1fr; } }
+
+/* ================= PÁGINA DE PERFIL ================= */
+a.nav-item { text-decoration: none; }
+.page-title { font-size: 1.05rem; font-weight: 800; }
+.topbar .top-actions { margin-left: auto; }
+.manage-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 14px; }
+.manage-card { display: flex; align-items: center; gap: 14px; text-align: left; background: #fff; border-radius: var(--radius-md); box-shadow: var(--sombra-card); padding: 18px; transition: transform 0.15s, box-shadow 0.15s; }
+.manage-card:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(17, 32, 88, 0.14); }
+.manage-card > i:first-child { font-size: 22px; width: 44px; height: 44px; display: grid; place-items: center; border-radius: 12px; background: var(--azul-suave); color: var(--azul); flex-shrink: 0; }
+.manage-card > span { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
+.manage-card small { color: var(--cinza-texto); font-size: 0.8rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.manage-card > i:last-child { color: var(--cinza-texto); font-size: 20px; }
+.manage-card.danger > i:first-child { background: rgba(229, 72, 77, 0.12); color: var(--vermelho); }
+.manage-card.danger strong { color: var(--vermelho); }
+.addr-item { display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; padding: 14px 0; border-bottom: 1px solid var(--cinza-claro); }
+.addr-item p { color: var(--cinza-texto); font-size: 0.85rem; margin-top: 2px; }
+.addr-actions { display: flex; gap: 6px; }
+.form-actions { display: flex; justify-content: flex-end; gap: 10px; }
+.modal-box.form { max-height: 90vh; overflow-y: auto; }
+#enderecosLista .btn-inline { margin-top: 16px; }
+.modal-box .field + .btn-inline, .modal-box .field + .btn-danger { margin-top: 4px; }
