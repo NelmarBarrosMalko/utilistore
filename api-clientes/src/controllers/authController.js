@@ -17,6 +17,9 @@ async function login(req, res) {
         const resultado = await authService.autenticar(loginRecebido, senha);
 
         if (!resultado.sucesso) {
+            if (resultado.motivo === "conta_inativa") {
+                return res.status(403).json({ message: "Conta inativa ou bloqueada." });
+            }
             return res.status(401).json({ message: "Login ou senha inválidos" });
         }
 
