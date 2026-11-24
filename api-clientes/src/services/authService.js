@@ -13,6 +13,10 @@ async function autenticar(login, senha) {
         return { sucesso: false, motivo: "credenciais_invalidas" };
     }
 
+    if (cliente.status && cliente.status !== "ativo") {
+        return { sucesso: false, motivo: "conta_inativa" };
+    }
+
     const senhaValida = await bcrypt.compare(senha, cliente.senha_hash);
 
     if (!senhaValida) {
