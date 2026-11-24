@@ -1,81 +1,136 @@
-// Controller do perfil: atualizar os próprios dados e excluir a própria conta.
+const clienteService = require("../services/clienteService");
 
-const bcrypt = require("bcryptjs");
-const clienteModel = require("../models/clienteModel");
+function validarId(id) {
+    return /^\d+$/.test(String(id)) && Number(id) > 0;
+}
 
-// PUT /api/clientes/me
-async function atualizar(req, res) {
-    const nome = (req.body.nome || "").trim();
-    const email = (req.body.email || "").trim();
-    const telefone = (req.body.telefone || "").trim();
-
-    if (!nome || !email || !telefone) {
-        return res.status(400).json({ message: "Informe nome, e-mail e telefone." });
-    }
-
+async function cadastrar(req, res) {
     try {
-        await clienteModel.atualizar(req.clienteLogado.id, { nome: nome, email: email, telefone: telefone });
-        return res.status(200).json({ id: req.clienteLogado.id, nome: nome, email: email, telefone: telefone });
+        const resultado = await clienteService.cadastrar(req.body || {});
+
+        if (resultado.erro) {
+            return res.status(400).json({ message: resultado.erro });
+        }
+
+        return res.status(201).json({
+            message: "Cadastro realizado com sucesso.",
+            cliente: { id: resultado.id }
+        });
     } catch (erro) {
         if (erro.code === "ER_DUP_ENTRY") {
-            return res.status(409).json({ message: "E-mail ou telefone já cadastrado." });
+            return res.status(409).json({
+                message: "CPF, e-mail ou telefone já cadastrado."
+            });
         }
-        console.error("Erro ao atualizar cliente:", erro);
-        return res.status(500).json({ message: "Erro interno do servidor." });
+
+        console.error("Erro ao cadastrar cliente:", erro);
+        return res.status(500).json({
+            message: "Erro interno do servidor."
+        });
     }
 }
 
-// PUT /api/clientes/me/senha
-async function alterarSenha(req, res) {
-    const senhaAtual = req.body.senhaAtual;
-    const novaSenha = req.body.novaSenha;
-
-    if (!senhaAtual || !novaSenha || novaSenha.length < 6) {
-        return res.status(400).json({ message: "Informe a senha atual e uma nova senha com no mínimo 6 caracteres." });
-    }
-
+async function listar(req, res) {
     try {
-        const cliente = await clienteModel.buscarPorId(req.clienteLogado.id);
-        const senhaValida = cliente && await bcrypt.compare(senhaAtual, cliente.senha_hash);
-
-        if (!senhaValida) {
-            return res.status(401).json({ message: "Senha atual incorreta." });
-        }
-
-        await clienteModel.atualizarSenha(cliente.id, await bcrypt.hash(novaSenha, 10));
-        return res.status(204).send();
+        const clientes = await clienteService.listar();
+        return res.status(200).json(clientes);
     } catch (erro) {
-        console.error("Erro ao alterar senha:", erro);
-        return res.status(500).json({ message: "Erro interno do servidor." });
+        console.error("Erro ao listar clientes:", erro);
+        return res.status(500).json({
+            message: "Erro ao consultar clientes."
+        });
     }
 }
 
-// DELETE /api/clientes/me (exige a senha no corpo, por segurança)
-async function excluir(req, res) {
-    const senha = req.body.senha;
-
-    if (!senha) {
-        return res.status(400).json({ message: "Informe sua senha para excluir a conta." });
-    }
-
+async function buscarPorId(req, res) {
     try {
-        const cliente = await clienteModel.buscarPorId(req.clienteLogado.id);
-        const senhaValida = cliente && await bcrypt.compare(senha, cliente.senha_hash);
+        const { id } = req.params;
 
-        if (!senhaValida) {
-            return res.status(401).json({ message: "Senha incorreta." });
+        if (!validarId(id)) {
+            return res.status(400).json({ message: "ID inválido." });
         }
 
-        await clienteModel.excluir(cliente.id);
-        return res.status(204).send();
+        const cliente = await clienteService.buscarPorId(id);
+
+        if (!cliente) {
+            return res.status(404).json({
+                message: "Cliente não encontrado."
+            });
+        }
+
+        return res.status(200).json(cliente);
+    } catch (erro) {
+        console.error("Erro ao buscar cliente:", erro);
+        return res.status(500).json({
+            message: "Erro ao consultar cliente."
+        });
+    }
+}
+
+async function atualizar(req, res) {
+    try {
+        const { id } = req.params;
+
+        if (!validarId(id)) {
+            return res.status(400).json({ message: "ID inválido." });
+        }
+
+        const resultado = await clienteService.atualizar(id, req.body || {});
+
+        if (resultado.erro) {
+            return res.status(resultado.status || 400).json({
+                message: resultado.erro
+            });
+        }
+
+        return res.status(200).json({
+            message: "Cliente atualizado com sucesso."
+        });
+    } catch (erro) {
+        if (erro.code === "ER_DUP_ENTRY") {
+            return res.status(409).json({
+                message: "CPF, e-mail ou telefone já cadastrado."
+            });
+        }
+
+        console.error("Erro ao atualizar cliente:", erro);
+        return res.status(500).json({
+            message: "Erro ao atualizar cliente."
+        });
+    }
+}
+
+async function excluir(req, res) {
+    try {
+        const { id } = req.params;
+
+        if (!validarId(id)) {
+            return res.status(400).json({ message: "ID inválido." });
+        }
+
+        const excluido = await clienteService.excluir(id);
+
+        if (!excluido) {
+            return res.status(404).json({
+                message: "Cliente não encontrado."
+            });
+        }
+
+        return res.status(200).json({
+            message: "Cliente excluído com sucesso."
+        });
     } catch (erro) {
         console.error("Erro ao excluir cliente:", erro);
-        return res.status(500).json({ message: "Erro interno do servidor." });
+        return res.status(500).json({
+            message: "Erro ao excluir cliente."
+        });
     }
 }
 
 module.exports = {
-    atualizar: atualizar,
-    alterarSenha: alterarSenha,
-    excluir: excluir
+    cadastrar,
+    listar,
+    buscarPorId,
+    atualizar,
+    excluir
 };
