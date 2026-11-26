@@ -6,16 +6,13 @@ const jwt = require("jsonwebtoken");
 const clienteModel = require("../models/clienteModel");
 
 async function autenticar(login, senha) {
-    const cliente = await clienteModel.buscarPorEmailOuTelefone(login);
+    const cliente = await clienteModel.buscarPorEmailOuTelefone(login.includes("@") ? login.trim().toLowerCase() : login.replace(/\D/g, ""));
 
     if (!cliente) {
         // Mensagem genérica: não revela se o login existe ou não.
         return { sucesso: false, motivo: "credenciais_invalidas" };
     }
 
-    if (cliente.status && cliente.status !== "ativo") {
-        return { sucesso: false, motivo: "conta_inativa" };
-    }
 
     const senhaValida = await bcrypt.compare(senha, cliente.senha_hash);
 

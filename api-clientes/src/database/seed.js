@@ -9,7 +9,7 @@ async function seed() {
     const nome = "Cliente Teste";
     const email = "cliente@utilistore.com";
     const telefone = "62999999999";
-    const senha = "123456";
+    const senha = "Teste1234";
 
     const senhaHash = await bcrypt.hash(senha, 10);
 
@@ -23,8 +23,8 @@ async function seed() {
         return;
     }
 
-    const sqlInsere = "INSERT INTO clientes (nome, email, telefone, senha_hash) VALUES (?, ?, ?, ?)";
-    const resultadoInsere = await pool.query(sqlInsere, [nome, email, telefone, senhaHash]);
+    const sqlInsere = "INSERT INTO clientes (nome, cpf, email, telefone, senha_hash) VALUES (?, ?, ?, ?, ?)";
+    const resultadoInsere = await pool.query(sqlInsere, [nome, "52998224725", email, telefone, senhaHash]);
 
     console.log("Cliente de teste criado com sucesso!");
     console.log("id: " + resultadoInsere[0].insertId);

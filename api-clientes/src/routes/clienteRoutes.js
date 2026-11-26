@@ -2,15 +2,11 @@ const express = require("express");
 const router = express.Router();
 const clienteController = require("../controllers/clienteController");
 
-// Cadastro
+// POST /api/clientes — cadastro público de cliente.
 router.post("/", clienteController.cadastrar);
 
-// Consulta
-router.get("/", clienteController.listar);
-router.get("/:id", clienteController.buscarPorId);
-
-// Alteração e exclusão
-router.put("/:id", clienteController.atualizar);
-router.delete("/:id", clienteController.excluir);
-
+const autenticar = require("../middlewares/authMiddleware");
+router.put("/me", autenticar, clienteController.atualizar);
+router.put("/me/senha", autenticar, clienteController.alterarSenha);
+router.delete("/me", autenticar, clienteController.excluir);
 module.exports = router;

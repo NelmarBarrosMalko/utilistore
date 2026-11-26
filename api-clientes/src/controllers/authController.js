@@ -9,7 +9,7 @@ async function login(req, res) {
     const loginRecebido = req.body.login;
     const senha = req.body.senha;
 
-    if (!loginRecebido || !senha) {
+    if (typeof loginRecebido !== "string" || typeof senha !== "string" || !loginRecebido || !senha) {
         return res.status(400).json({ message: "Informe login (e-mail ou telefone) e senha." });
     }
 
@@ -17,9 +17,6 @@ async function login(req, res) {
         const resultado = await authService.autenticar(loginRecebido, senha);
 
         if (!resultado.sucesso) {
-            if (resultado.motivo === "conta_inativa") {
-                return res.status(403).json({ message: "Conta inativa ou bloqueada." });
-            }
             return res.status(401).json({ message: "Login ou senha inválidos" });
         }
 
@@ -46,8 +43,10 @@ async function me(req, res) {
         return res.status(200).json({
             id: cliente.id,
             nome: cliente.nome,
+            cpf: cliente.cpf,
             email: cliente.email,
-            telefone: cliente.telefone
+            telefone: cliente.telefone,
+            biografia: cliente.biografia
         });
     } catch (erro) {
         console.error("Erro ao buscar cliente autenticado:", erro);

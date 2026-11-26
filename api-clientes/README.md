@@ -1,199 +1,22 @@
-# api-clientes
+# UtiliStore — módulo Clientes
 
-API do módulo de Clientes do projeto UtiliStore.
+## Executar
+1. No MySQL Workbench, execute `api-clientes/src/database/schema.sql`. Não execute a migration antiga. Em banco existente, o script adiciona CPF se faltar e preserva colunas e registros antigos; não converte tipos nem corrige índices existentes. Faça backup antes de qualquer alteração manual. Se houver colunas antigas obrigatórias sem default, será necessário adaptar o banco. Use um banco novo para testar o esquema limpo.
+2. Entre em `api-clientes`, execute `npm install`, copie `.env.example` para `.env` e configure MySQL e uma chave JWT forte e privada.
+3. Execute `npm start`. Abra `utilistore/index.html` com Live Server e ajuste FRONTEND_URL no .env para a origem real (reinicie a API).
+4. Cadastre um cliente, faça login e abra Perfil ou Configurações no dashboard.
 
-**Escopo atual: apenas autenticação (login).** Cadastro, recuperação de senha,
-endereços, pedidos e funcionalidades administrativas foram retirados do
-escopo por enquanto e serão adicionados depois.
+## Rotas
+- POST /api/clientes: nome, cpf, email, telefone, senha.
+- POST /api/auth/login: login (email ou telefone), senha.
+- GET /api/auth/me: dados próprios.
+- PUT /api/clientes/me: nome, email, telefone.
+- PUT /api/clientes/me/senha: senhaAtual, novaSenha.
+- DELETE /api/clientes/me: senha.
 
-## O que a API faz hoje
+Rotas de conta exigem Authorization: Bearer TOKEN. O ID vem do JWT. CPF não é editável. Senhas são armazenadas como hash bcrypt; novas senhas exigem 8 caracteres, letras e números, até 72 bytes. Tokens já emitidos expiram conforme JWT_EXPIRES_IN; alteração de senha não revoga tokens anteriores. Não há rotas administrativas. Produtos, pedidos e carrinho são demonstrativos.
 
-- `POST /api/auth/login` — login de cliente por **e-mail ou telefone** + senha.
-- `GET /api/auth/me` — retorna os dados do cliente autenticado (exige token JWT).
-- `GET /` — verificação simples de que a API está no ar.
+## Testes manuais sugeridos
+Cadastro válido e duplicado; login correto e incorreto; consulta sem token; edição com ID/CPF de outro cliente no corpo (não deve alterar esses campos); alteração de senha incorreta/correta; login com nova senha; exclusão com senha incorreta/correta; consulta após exclusão. Use dados fictícios em banco de teste.
 
-## Estrutura do projeto
-
-```
-server.js                      inicia o servidor (porta 3000)
-src/
-├── app.js                     configura o Express, CORS e as rotas
-├── database/
-│   ├── database.js            conexão (pool) com o MySQL
-│   ├── schema.sql             script para criar o banco e a tabela clientes
-│   └── seed.js                cria um cliente de teste para login
-├── models/
-│   └── clienteModel.js        consultas SQL na tabela clientes
-├── services/
-│   └── authService.js         regra de negócio do login (senha + token)
-├── controllers/
-│   └── authController.js      recebe a requisição e devolve a resposta
-├── middlewares/
-│   └── authMiddleware.js      valida o token JWT nas rotas protegidas
-└── routes/
-    └── authRoutes.js          define /api/auth/login e /api/auth/me
-```
-
-## 1. Instalação
-
-```bash
-npm install
-```
-
-Isso vai instalar (e gerar/atualizar o `package-lock.json`):
-`express`, `mysql2`, `bcryptjs`, `jsonwebtoken`, `dotenv`, `cors` e, como
-dependência de desenvolvimento, `nodemon`.
-
-> Este projeto usa **bcryptjs** (não o `bcrypt` nativo) de propósito: é uma
-> biblioteca 100% JavaScript, então instala sem precisar de compilador C/C++
-> na máquina — mais simples para todo mundo do grupo rodar o projeto.
-
-## 2. Configurar o `.env`
-
-Copie o arquivo de exemplo:
-
-```bash
-cp .env.example .env
-```
-
-E preencha com os dados do seu MySQL local:
-
-```
-DB_HOST=localhost
-DB_USER=root
-DB_PASSWORD=sua_senha
-DB_NAME=utilistore
-DB_PORT=3306
-
-JWT_SECRET=uma_chave_secreta_qualquer
-JWT_EXPIRES_IN=2h
-
-PORT=3000
-
-FRONTEND_URL=http://localhost:5173
-```
-
-`FRONTEND_URL` é usada na configuração de CORS — ajuste para a porta real
-em que o frontend roda localmente (se ficar em branco, a API libera
-qualquer origem, o que é aceitável apenas em desenvolvimento).
-
-## 3. Configurar o banco MySQL
-
-Com o MySQL rodando, execute o script de schema:
-
-```bash
-mysql -u root -p < src/database/schema.sql
-```
-
-Isso cria o banco `utilistore` (ou o nome que você definiu em `DB_NAME`,
-ajuste o script se mudar) e a tabela:
-
-```sql
-clientes (id, nome, email, telefone, senha_hash, created_at, updated_at)
-```
-
-A senha é sempre guardada como hash bcrypt na coluna `senha_hash` — nunca
-em texto puro.
-
-## 4. Executar o projeto
-
-```bash
-npm start        # produção
-npm run dev       # desenvolvimento, com nodemon
-```
-
-O servidor sobe em `http://localhost:3000` (ou na porta definida em `PORT`).
-
-## 5. Criar o cliente de teste (seed)
-
-Como o cadastro não faz parte do escopo atual, use o seed para ter um
-usuário para testar o login:
-
-```bash
-npm run seed
-```
-
-Isso insere (se ainda não existir) o cliente:
-
-| Campo    | Valor                  |
-|----------|------------------------|
-| nome     | Cliente Teste          |
-| email    | cliente@utilistore.com |
-| telefone | 62999999999            |
-| senha    | 123456 (salva como hash bcrypt) |
-
-Rodar o seed novamente não duplica o registro — ele verifica se o e-mail já
-existe antes de inserir.
-
-## 6. Testar o login
-
-### Login com e-mail
-
-```
-POST http://localhost:3000/api/auth/login
-Content-Type: application/json
-
-{
-  "login": "cliente@utilistore.com",
-  "senha": "123456"
-}
-```
-
-### Login com telefone
-
-```
-POST http://localhost:3000/api/auth/login
-Content-Type: application/json
-
-{
-  "login": "62999999999",
-  "senha": "123456"
-}
-```
-
-Resposta esperada (200):
-
-```json
-{
-  "message": "Login realizado com sucesso",
-  "token": "eyJhbGciOi...",
-  "cliente": {
-    "id": 1,
-    "nome": "Cliente Teste",
-    "email": "cliente@utilistore.com"
-  }
-}
-```
-
-### Consultar o cliente autenticado
-
-```
-GET http://localhost:3000/api/auth/me
-Authorization: Bearer eyJhbGciOi...
-```
-
-## 7. Como o frontend deve chamar a API
-
-```js
-const resposta = await fetch("http://localhost:3000/api/auth/login", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ login: valorDoCampo, senha: senhaDigitada })
-});
-
-const dados = await resposta.json();
-
-if (resposta.ok) {
-    // dados.token, dados.cliente
-} else {
-    // dados.message
-}
-```
-
-O campo único "E-mail ou telefone" da tela de login pode ser enviado direto
-como `login` — o backend descobre sozinho se é e-mail ou telefone.
-
-## Próximos passos (fora do escopo atual)
-
-Cadastro de cliente, recuperação de senha, endereços, pedidos e painel
-administrativo ficam para uma próxima etapa do projeto.
+Validação realizada: sintaxe JavaScript com node --check. Não executado contra MySQL real nem testado no navegador.

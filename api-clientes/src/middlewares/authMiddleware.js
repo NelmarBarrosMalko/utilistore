@@ -13,12 +13,12 @@ function autenticar(req, res, next) {
     const partes = cabecalho.split(" ");
     const token = partes[1];
 
-    if (!token) {
+    if (partes.length !== 2 || partes[0] !== "Bearer" || !token) {
         return res.status(401).json({ message: "Token mal formatado." });
     }
 
     jwt.verify(token, process.env.JWT_SECRET, function (erro, dados) {
-        if (erro) {
+        if (erro || !Number.isInteger(dados?.id)) {
             return res.status(401).json({ message: "Token inválido ou expirado." });
         }
 

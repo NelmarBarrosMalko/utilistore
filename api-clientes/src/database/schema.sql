@@ -1,16 +1,27 @@
--- Banco do módulo Clientes. Para bancos já existentes, execute também migration_cadastro.sql.
+-- Banco do módulo Clientes. Criação de banco novo.
 CREATE DATABASE IF NOT EXISTS utilistore;
 USE utilistore;
 
 CREATE TABLE IF NOT EXISTS clientes (
     id INT AUTO_INCREMENT PRIMARY KEY,
     nome VARCHAR(150) NOT NULL,
-    cpf VARCHAR(14) NULL UNIQUE,
+    cpf VARCHAR(14) NOT NULL UNIQUE,
     email VARCHAR(150) NOT NULL UNIQUE,
     telefone VARCHAR(20) NOT NULL UNIQUE,
-    data_nascimento DATE NULL,
+    biografia VARCHAR(200) NULL,
     senha_hash VARCHAR(255) NOT NULL,
-    status VARCHAR(20) NOT NULL DEFAULT 'ativo',
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
     updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
+
+-- Para bancos antigos sem CPF, adiciona a coluna sem apagar registros.
+SET @sql = IF(EXISTS(SELECT 1 FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'clientes' AND COLUMN_NAME = 'cpf'), 'SELECT 1', 'ALTER TABLE clientes ADD COLUMN cpf VARCHAR(14) NULL UNIQUE');
+PREPARE stmt FROM @sql;
+EXECUTE stmt;
+DEALLOCATE PREPARE stmt;
+-- Colunas antigas são preservadas para evitar perda de dados.
+
+SET @sql = IF(EXISTS(SELECT 1 FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'clientes' AND COLUMN_NAME = 'biografia'), 'SELECT 1', 'ALTER TABLE clientes ADD COLUMN biografia VARCHAR(200) NULL');
+PREPARE stmt FROM @sql;
+EXECUTE stmt;
+DEALLOCATE PREPARE stmt;
