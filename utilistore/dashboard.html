@@ -55,7 +55,7 @@
         <div class="menu-wrap">
           <button class="user-btn" id="userBtn" aria-label="Menu do usuário">
             <span class="avatar" id="avatar">C</span>
-            <span class="user-info"><strong id="userName">Cliente</strong><small>Cliente</small></span>
+            <span class="user-info"><strong id="userName">Cliente</strong><small id="userRole">Cliente</small></span>
           </button>
           <div class="dropdown menu-user" id="userMenu" hidden>
             <button data-go="Perfil"><i class="bx bx-user"></i>Meu perfil</button>
@@ -67,47 +67,156 @@
     </header>
 
     <main class="content">
-      <!-- ===== BOAS-VINDAS ===== -->
-      <section class="welcome">
-        <h1>Olá, Cliente! 👋</h1>
-        <p>Acompanhe seus pedidos, encontre novos produtos e gerencie sua conta.</p>
-      </section>
 
-      <!-- ===== CARDS DE RESUMO (gerados pelo JS) ===== -->
-      <section class="stats" id="stats"></section>
+      <!-- ################ TELA: DASHBOARD (INÍCIO) ################ -->
+      <div class="view" id="view-home">
+        <!-- ===== BOAS-VINDAS ===== -->
+        <section class="welcome">
+          <h1>Olá, <span id="welcomeName">Cliente</span>! 👋</h1>
+          <p>Acompanhe seus pedidos, encontre novos produtos e gerencie sua conta.</p>
+        </section>
 
-      <!-- ===== BANNER ===== -->
-      <section class="banner">
-        <div>
-          <h2>Ofertas especiais para você</h2>
-          <p>Confira produtos selecionados com condições especiais.</p>
+        <!-- ===== CARDS DE RESUMO (gerados pelo JS) ===== -->
+        <section class="stats" id="stats"></section>
+
+        <!-- ===== BANNER ===== -->
+        <section class="banner">
+          <div>
+            <h2>Ofertas especiais para você</h2>
+            <p>Confira produtos selecionados com condições especiais.</p>
+          </div>
+          <button class="btn-light" id="offersBtn">Ver ofertas</button>
+        </section>
+
+        <!-- ===== PEDIDOS RECENTES ===== -->
+        <section class="section" id="ordersSection">
+          <div class="section-head">
+            <h2>Pedidos recentes</h2>
+            <div class="filters" id="orderFilters"></div>
+          </div>
+          <div class="table-card">
+            <table>
+              <thead>
+                <tr><th>Pedido</th><th>Produto</th><th>Data</th><th>Valor</th><th>Status</th><th></th></tr>
+              </thead>
+              <tbody id="ordersBody"></tbody>
+            </table>
+            <p class="empty" id="ordersEmpty" hidden>Nenhum pedido com esse status.</p>
+          </div>
+        </section>
+
+        <!-- ===== RECOMENDADOS ===== -->
+        <section class="section" id="productsSection">
+          <div class="section-head"><h2>Recomendados para você</h2></div>
+          <div class="products" id="productGrid"></div>
+          <p class="empty" id="productsEmpty" hidden>Nenhum produto encontrado. Tente outro termo de busca.</p>
+        </section>
+      </div>
+
+      <!-- ################ TELA: PERFIL ################ -->
+      <div class="view" id="view-profile" hidden>
+        <section class="welcome">
+          <h1>Meu perfil</h1>
+          <p>Veja e atualize suas informações pessoais.</p>
+        </section>
+
+        <div class="profile-grid">
+          <!-- Cartão resumo -->
+          <div class="profile-summary">
+            <div class="profile-avatar">
+              <img id="avatarImg" alt="Foto de perfil" hidden />
+              <span id="avatarInitials">C</span>
+            </div>
+
+            <label for="avatarInput" class="avatar-upload"><i class="bx bxs-camera"></i> Alterar foto</label>
+            <input type="file" id="avatarInput" accept="image/*" hidden />
+            <button type="button" class="link-btn" id="removeAvatarBtn" hidden>Remover foto</button>
+
+            <h3 id="summaryName">Nome</h3>
+            <p class="summary-email" id="summaryEmail">email@exemplo.com</p>
+            <span class="type-badge" id="summaryType">Cliente</span>
+          </div>
+
+          <!-- Formulário de edição -->
+          <div class="profile-form-card">
+            <div id="profileAlert" class="alert" hidden></div>
+
+            <form id="profileForm" novalidate>
+              <div class="field-group">
+                <label for="profName" class="field-label">Nome completo</label>
+                <div class="input-with-icon">
+                  <i class="bx bxs-user"></i>
+                  <input type="text" id="profName" placeholder="Seu nome completo" autocomplete="name" />
+                </div>
+                <span class="field-error" id="profNameError"></span>
+              </div>
+
+              <div class="field-group">
+                <label for="profEmail" class="field-label">E-mail</label>
+                <div class="input-with-icon">
+                  <i class="bx bxs-envelope"></i>
+                  <input type="email" id="profEmail" placeholder="seuemail@exemplo.com" autocomplete="email" />
+                </div>
+                <span class="field-error" id="profEmailError"></span>
+              </div>
+
+              <div class="field-group">
+                <label for="profPhone" class="field-label">Telefone</label>
+                <div class="input-with-icon">
+                  <i class="bx bxs-phone"></i>
+                  <input type="tel" id="profPhone" placeholder="(00) 00000-0000" autocomplete="tel" />
+                </div>
+                <span class="field-error" id="profPhoneError"></span>
+              </div>
+
+              <div class="field-group"><label class="field-label" for="profCpf">CPF</label><div class="input-with-icon"><input id="profCpf" readonly /></div></div>
+              <div class="field-group">
+                <label for="profBio" class="field-label">Sobre você</label>
+                <div class="input-with-icon">
+                  <textarea id="profBio" rows="3" maxlength="200" placeholder="Conte um pouco sobre você"></textarea>
+                </div>
+                <span class="field-error"></span>
+              </div>
+
+              <div class="field-group">
+                <label class="field-label">Tipo de conta</label>
+                <div class="type-select">
+                  <label class="access-option">
+                    <input type="radio" name="profType" value="usuario" checked />
+                    <span class="access-btn"><i class="bx bx-user"></i> Cliente</span>
+                  </label>
+                  <label class="access-option">
+                    <input type="radio" name="profType" value="vendedor" disabled />
+                    <span class="access-btn"><i class="bx bx-store"></i> Vendedor</span>
+                  </label>
+                </div>
+              </div>
+
+              <button type="submit" class="btn-primary">Salvar alterações</button>
+            </form>
+          </div>
         </div>
-        <button class="btn-light" id="offersBtn">Ver ofertas</button>
-      </section>
+      </div>
 
-      <!-- ===== PEDIDOS RECENTES ===== -->
-      <section class="section">
-        <div class="section-head">
-          <h2>Pedidos recentes</h2>
-          <div class="filters" id="orderFilters"></div>
+      <div class="view" id="view-settings" hidden>
+        <section class="welcome"><h1>Configurações</h1></section>
+        <div class="profile-form-card"><p id="settingsMessage" role="status"></p>
+          <form id="senhaForm"><h3>Alterar senha</h3><div class="field-group"><label>Senha atual <input name="senhaAtual" type="password" required></label></div><div class="field-group"><label>Nova senha <input name="novaSenha" type="password" minlength="8" required></label></div><button class="btn-primary">Alterar senha</button></form>
+          <hr><form id="excluirForm"><h3>Excluir conta</h3><div class="field-group"><label>Confirme a senha <input name="senha" type="password" required></label></div><button class="btn-primary">Excluir minha conta</button></form>
         </div>
-        <div class="table-card">
-          <table>
-            <thead>
-              <tr><th>Pedido</th><th>Produto</th><th>Data</th><th>Valor</th><th>Status</th><th></th></tr>
-            </thead>
-            <tbody id="ordersBody"></tbody>
-          </table>
-          <p class="empty" id="ordersEmpty" hidden>Nenhum pedido com esse status.</p>
+      </div>
+      <!-- ################ TELA: EM BREVE (demais itens do menu) ################ -->
+      <div class="view" id="view-placeholder" hidden>
+        <section class="welcome">
+          <h1 id="placeholderTitle">Em breve</h1>
+          <p>Esta área ainda está em construção.</p>
+        </section>
+        <div class="table-card placeholder-card">
+          <i class="bx bx-wrench"></i>
+          <p>Estamos preparando esta seção. Volte em breve!</p>
         </div>
-      </section>
+      </div>
 
-      <!-- ===== RECOMENDADOS ===== -->
-      <section class="section" id="productsSection">
-        <div class="section-head"><h2>Recomendados para você</h2></div>
-        <div class="products" id="productGrid"></div>
-        <p class="empty" id="productsEmpty" hidden>Nenhum produto encontrado. Tente outro termo de busca.</p>
-      </section>
     </main>
   </div>
 
@@ -120,6 +229,8 @@
     </div>
   </div>
 
+  <!-- script.js traz funções de apoio (sessão, validação); dashboard.js controla esta página -->
+  <script src="js/utils.js"></script>
   <script src="js/dashboard.js"></script>
 </body>
 </html>
